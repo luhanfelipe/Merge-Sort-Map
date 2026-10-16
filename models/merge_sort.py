@@ -72,37 +72,52 @@ def gerar_cidades(n):
 
     return cidades
 
+
 # =====================================================
-# PARTE 2: Algoritmo Merge Sort básico (sem passos)
+# Merge Sort com registro de passos
 # =====================================================
 
-def _merge_sort(cidades):
-    """Merge Sort recursivo. Retorna uma nova lista ordenada por populacao.
-
-    Não registra passos — isso será adicionado na Parte 3.
-    """
+def _merge_sort(cidades, passos):
+    """Merge Sort recursivo. Registra cada comparação e merge em `passos`."""
     if len(cidades) <= 1:
         return cidades
 
     meio = len(cidades) // 2
-    esquerda = _merge_sort(cidades[:meio])
-    direita = _merge_sort(cidades[meio:])
+    esquerda = _merge_sort(cidades[:meio], passos)
+    direita = _merge_sort(cidades[meio:], passos)
 
-    return _merge(esquerda, direita)
+    return _merge(esquerda, direita, passos)
 
 
-def _merge(esquerda, direita):
-    """Junta duas listas já ordenadas numa única lista ordenada."""
+def _merge(esquerda, direita, passos):
+    """Junta duas listas ordenadas e registra o merge em `passos`."""
     resultado = []
     i = 0
     j = 0
 
     while i < len(esquerda) and j < len(direita):
-        if esquerda[i].populacao <= direita[j].populacao:
-            resultado.append(esquerda[i])
+        a = esquerda[i]
+        b = direita[j]
+
+        # Registra a comparação
+        if a.populacao <= b.populacao:
+            vencedor = a
+        else:
+            vencedor = b
+
+        passos.append({
+            "tipo": "comparar",
+            "a_id": a.id,
+            "b_id": b.id,
+            "vencedor_id": vencedor.id,
+        })
+
+        # Escolhe quem vai pro resultado
+        if a.populacao <= b.populacao:
+            resultado.append(a)
             i += 1
         else:
-            resultado.append(direita[j])
+            resultado.append(b)
             j += 1
 
     # Sobras
@@ -114,9 +129,27 @@ def _merge(esquerda, direita):
         resultado.append(direita[j])
         j += 1
 
+    # Registra o merge desta rodada
+    passos.append({
+        "tipo": "merge",
+        "grupo1_ids": [c.id for c in esquerda],
+        "grupo2_ids": [c.id for c in direita],
+        "resultado_ids": [c.id for c in resultado],
+    })
+
     return resultado
 
 
+def ordenar_com_passos(cidades):
+    """Ordena uma lista de cidades E retorna os passos executados.
+
+    Retorna uma tupla: (cidades_ordenadas, lista_de_passos).
+    """
+    passos = []
+    ordenadas = _merge_sort(cidades, passos)
+    return ordenadas, passos
+
+
 def ordenar(cidades):
-    """Função pública: ordena uma lista de cidades por população."""
-    return _merge_sort(cidades)
+    """Atalho: só ordena, sem se importar com os passos."""
+    return _merge_sort(cidades, [])
