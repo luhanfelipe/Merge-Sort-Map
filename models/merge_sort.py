@@ -71,3 +71,52 @@ def gerar_cidades(n):
         )
 
     return cidades
+
+# =====================================================
+# PARTE 2: Algoritmo Merge Sort básico (sem passos)
+# =====================================================
+
+def _merge_sort(cidades):
+    """Merge Sort recursivo. Retorna uma nova lista ordenada por populacao.
+
+    Não registra passos — isso será adicionado na Parte 3.
+    """
+    if len(cidades) <= 1:
+        return cidades
+
+    meio = len(cidades) // 2
+    esquerda = _merge_sort(cidades[:meio])
+    direita = _merge_sort(cidades[meio:])
+
+    return _merge(esquerda, direita)
+
+
+def _merge(esquerda, direita):
+    """Junta duas listas já ordenadas numa única lista ordenada."""
+    resultado = []
+    i = 0
+    j = 0
+
+    while i < len(esquerda) and j < len(direita):
+        if esquerda[i].populacao <= direita[j].populacao:
+            resultado.append(esquerda[i])
+            i += 1
+        else:
+            resultado.append(direita[j])
+            j += 1
+
+    # Sobras
+    while i < len(esquerda):
+        resultado.append(esquerda[i])
+        i += 1
+
+    while j < len(direita):
+        resultado.append(direita[j])
+        j += 1
+
+    return resultado
+
+
+def ordenar(cidades):
+    """Função pública: ordena uma lista de cidades por população."""
+    return _merge_sort(cidades)
