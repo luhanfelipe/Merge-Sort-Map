@@ -1,0 +1,87 @@
+/* === Reset básico === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* === Corpo da página === */
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #0f0f1e;
+    color: #e8e8e8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* === Cabeçalho === */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 32px;
+    color: #a78bfa;
+    margin-bottom: 6px;
+}
+
+.subtitulo {
+    font-size: 14px;
+    color: #888;
+}
+
+/* === Área principal === */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 960px;
+}
+
+/* === Controles (botões) === */
+.controles {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    background: #6c63ff;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #5a52d5;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+/* === Container do mapa === */
+.mapa-container {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+canvas {
+    display: block;
+    border-radius: 8px;
+    background: #15152a;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Sort Map</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Merge Sort Map</h1>
+        <p class="subtitulo">Visualizador interativo do algoritmo Merge Sort</p>
+    </header>
+
+    <main>
+        <div class="controles">
+            <button id="btn-reiniciar">🔄 Reiniciar</button>
+        </div>
+
+        <div class="mapa-container">
+            <canvas id="mapa" width="900" height="600"></canvas>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
+</body>
+</html>
