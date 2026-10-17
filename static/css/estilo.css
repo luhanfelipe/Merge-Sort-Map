@@ -61,7 +61,7 @@ button {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
 }
 
 button:hover {
@@ -80,8 +80,10 @@ button:active {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
+/* === Estilização do Canvas do Mapa === */
 canvas {
     display: block;
     border-radius: 8px;
     background: #15152a;
+    border: 1px solid #2a2a4a;
 }
