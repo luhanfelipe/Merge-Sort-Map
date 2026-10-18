@@ -87,3 +87,27 @@ canvas {
     background: #15152a;
     border: 1px solid #2a2a4a;
 }
+
+/* === Controles adicionais === */
+.velocidade-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #a0a0a0;
+    font-size: 14px;
+}
+
+.velocidade-container input[type="range"] {
+    width: 120px;
+    accent-color: #6c63ff;
+    cursor: pointer;
+}
+
+.botao-acao:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.botao-acao:disabled:hover {
+    background: #6c63ff;
+}
