@@ -34,17 +34,11 @@
     <script src="{{ url_for('static', filename='js/api.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
     <script>
-        // Botão "Reiniciar": busca novas cidades
-        document.getElementById('btn-reiniciar')?.addEventListener('click', async () => {
-            const dados = await buscarCidades();
-            if (dados && dados.cidades) {
-                cidadesGlobais = dados.cidades;
-                passosGlobais = dados.passos;
-                desenharCidades(cidadesGlobais);
-            }
-        });
+        document.getElementById('btn-play')?.addEventListener('click', play);
+        document.getElementById('btn-pause')?.addEventListener('click', pause);
+        document.getElementById('btn-passo')?.addEventListener('click', passoAPasso);
+        document.getElementById('btn-reiniciar')?.addEventListener('click', reiniciar);
     </script>
-
+    
 </body>
-
 </html>
