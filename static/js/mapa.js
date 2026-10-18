@@ -20,6 +20,49 @@ function limparCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+/**
+ * Desenha um fundo estilo mapa (ruas, quadras) no canvas.
+ * Chamado antes de desenhar as cidades, pra dar sensação de mapa.
+ */
+function desenharFundoMapa() {
+    const canvas = document.getElementById('mapa');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // Fundo base escuro
+    ctx.fillStyle = '#0a1a2e';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Quadras (preenchimento sutil de "quarteirões")
+    ctx.fillStyle = '#0f2440';
+    for (let y = 0; y < canvas.height; y += 60) {
+        for (let x = 0; x < canvas.width; x += 80) {
+            if ((x + y) % 160 === 0) {
+                ctx.fillRect(x + 2, y + 2, 76, 56);
+            }
+        }
+    }
+
+    // Ruas (linhas)
+    ctx.strokeStyle = '#1a3a5c';
+    ctx.lineWidth = 1;
+
+    // Ruas horizontais
+    for (let y = 0; y < canvas.height; y += 60) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+
+    // Ruas verticais
+    for (let x = 0; x < canvas.width; x += 80) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+}
 
 /**
  * Desenha uma seta entre dois pontos.
@@ -79,6 +122,7 @@ function desenharCidades(cidades, destacadasIds = [], concluidasIds = [], setasC
     const ctx = canvas.getContext('2d');
 
     limparCanvas();
+    desenharFundoMapa();
 
     const escalaX = canvas.width / 100;
     const escalaY = canvas.height / 100;
@@ -109,8 +153,8 @@ function desenharCidades(cidades, destacadasIds = [], concluidasIds = [], setasC
         const py = cidade.y * escalaY;
         const raio = 4 + (cidade.populacao / 100000) * 12;
 
-        let corCirculo = '#a78bfa';
-        let corBorda = '#6c63ff';
+        let corCirculo = '#00e5ff'; // ciano (destaca bem no fundo escuro)
+        let corBorda = '#00b8d4';
 
         if (concluidasIds.includes(cidade.id)) {
             corCirculo = '#34d399';
@@ -119,7 +163,7 @@ function desenharCidades(cidades, destacadasIds = [], concluidasIds = [], setasC
             corCirculo = '#fbbf24';
             corBorda = '#f59e0b';
         }
-
+        
         ctx.beginPath();
         ctx.arc(px, py, raio, 0, Math.PI * 2);
         ctx.fillStyle = corCirculo;
