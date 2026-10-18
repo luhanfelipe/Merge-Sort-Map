@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Merge Sort Map</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@1,800;1,900&family=Teko:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+
+<body class="body-sobre">
+
+    <!-- Botão Voltar -->
+    <a href="/" class="btn-voltar-neon">⬅ VOLTAR</a>
+
+    <div class="sobre-container">
+        <!-- Título -->
+        <header class="sobre-header">
+            <h1 class="sobre-title">
+                <span class="detonation">SOBRE</span>
+                <span class="dash">NÓS</span>
+            </h1>
+            <p class="sobre-subtitle">Conheça o time por trás do Merge Sort Map</p>
+        </header>
+
+        <!-- Cards dos Desenvolvedores -->
+        <section class="devs-container">
+
+            <!-- Luhan Felipe -->
+            <a href="https://github.com/luhanfelipe" target="_blank" class="dev-link">
+                <div class="dev-card">
+                    <div class="dev-photo">
+                        <img src="https://github.com/luhanfelipe.png?size=120" alt="Luhan Felipe">
+                    </div>
+                    <div class="dev-info">
+                        <h3 class="dev-name">Luhan Felipe</h3>
+                        <p class="dev-role">Estudante de TSI - IFPE - 4º Período</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Alan Santos -->
+            <a href="https://github.com/alan-santosBS" target="_blank" class="dev-link">
+                <div class="dev-card">
+                    <div class="dev-photo">
+                        <img src="https://github.com/alan-santosBS.png?size=120" alt="Alan Santos">
+                    </div>
+                    <div class="dev-info">
+                        <h3 class="dev-name">Alan Santos</h3>
+                        <p class="dev-role">Estudante de TSI - IFPE - 4º Período</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Luísa Vitória -->
+            <a href="https://github.com/luisavmf0" target="_blank" class="dev-link">
+                <div class="dev-card">
+                    <div class="dev-photo">
+                        <img src="https://github.com/luisavmf0.png?size=120" alt="Luísa Vitória">
+                    </div>
+                    <div class="dev-info">
+                        <h3 class="dev-name">Luísa Vitória</h3>
+                        <p class="dev-role">Estudante de TSI - IFPE - 4º Período</p>
+                    </div>
+                </div>
+            </a>
+
+        </section>
+
+        <!-- Sobre o Projeto -->
+        <section class="project-container">
+            <h3 class="project-title">Sobre o Projeto</h3>
+
+            <p class="project-text">
+                O <strong>Merge Sort Map</strong> é um visualizador interativo do algoritmo
+                <strong>Merge Sort</strong> usando um mapa de cidades como metáfora. Cada cidade
+                tem uma população, e o algoritmo organiza as cidades em ordem crescente de população,
+                mostrando cada comparação e junção em tempo real.
+            </p>
+
+            <p class="project-text">
+                O destaque técnico é a <strong>recursão do Merge Sort</strong> (divisão e conquista)
+                e a forma como cada passo do algoritmo é registrado no backend (Python) e animado no
+                frontend (JavaScript) com setas indicando as comparações e o resultado final.
+            </p>
+
+            <p class="project-text">
+                Desenvolvido como trabalho da disciplina de <strong>Algoritmos e Estruturas de Dados</strong>
+                no curso de <strong>Tecnologia em Sistemas para Internet (TSI)</strong> do IFPE.
+            </p>
+
+            <div class="tech-tags">
+                <span>Python</span>
+                <span>Flask</span>
+                <span>JavaScript</span>
+                <span>HTML5</span>
+                <span>CSS3</span>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

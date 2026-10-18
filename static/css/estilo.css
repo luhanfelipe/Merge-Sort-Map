@@ -264,3 +264,235 @@ body.body-inicio {
     text-shadow: 2px 2px 0 #000;
     transform: skewX(6deg);
 }
+
+/* ==========================================================================
+   TELA SOBRE
+   ========================================================================== */
+body.body-sobre {
+    display: block;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Orbitron', sans-serif;
+    color: #ffffff;
+    /* Fundo azul escuro com gradiente e textura sutil */
+    background:
+        linear-gradient(rgba(9, 20, 38, 0.85), rgba(9, 20, 38, 0.95)),
+        url('../images/bg-home.jpg') center center / cover no-repeat;
+    background-color: #091426;
+    background-attachment: fixed;
+}
+
+.sobre-container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 30px 80px;
+}
+
+/* Header */
+.sobre-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.sobre-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0 10px;
+    transform: skewX(-8deg);
+    line-height: 0.9;
+}
+
+.sobre-title .detonation {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 3px;
+    text-shadow: 3px 3px 0 #000, -2px -2px 0 #00ffff;
+}
+
+.sobre-title .dash {
+    font-size: 3.6rem;
+    font-weight: 900;
+    color: #00e5ff;
+    letter-spacing: 4px;
+    text-shadow: 3px 3px 0 #000, -2px -2px 0 #0077ff;
+}
+
+.sobre-subtitle {
+    font-family: 'Teko', sans-serif;
+    font-size: 1.5rem;
+    color: #bbdefb;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Container dos Devs */
+.devs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 50px;
+}
+
+.dev-link {
+    text-decoration: none;
+    display: block;
+    transform: skewX(-3deg);
+    transition: transform 0.2s ease;
+}
+
+.dev-link:hover {
+    transform: skewX(-3deg) translateX(10px);
+}
+
+.dev-card {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    background: rgba(15, 30, 55, 0.75);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 255, 204, 0.3);
+    border-radius: 16px;
+    padding: 18px 24px;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.1);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.dev-link:hover .dev-card {
+    border-color: #00ffcc;
+    box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
+}
+
+/* Foto Redonda */
+.dev-photo {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 3px solid #ffcc00;
+    box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+    background: #000;
+}
+
+.dev-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dev-info {
+    text-align: left;
+    flex: 1;
+    transform: skewX(3deg);
+}
+
+.dev-name {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.dev-role {
+    margin: 5px 0 0;
+    font-family: 'Teko', sans-serif;
+    font-size: 1.2rem;
+    color: #bbdefb;
+    letter-spacing: 0.5px;
+}
+
+/* Sobre o Projeto */
+.project-container {
+    background: rgba(15, 30, 55, 0.85);
+    border: 2px solid rgba(0, 255, 204, 0.4);
+    border-radius: 16px;
+    padding: 35px 40px;
+    box-shadow: 0 0 30px rgba(0, 255, 204, 0.15);
+    margin-bottom: 40px;
+}
+
+.project-title {
+    font-size: 1.8rem;
+    color: #00e5ff;
+    margin: 0 0 25px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0 #000;
+    text-align: center;
+}
+
+.project-text {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #e0e0e0;
+    margin: 0 0 15px;
+    text-align: justify;
+}
+
+.project-text strong {
+    color: #ffcc00;
+    font-weight: 700;
+}
+
+/* Tags de Tecnologia */
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.tech-tags span {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffcc00;
+    background: rgba(255, 204, 0, 0.1);
+    border: 1px solid rgba(255, 204, 0, 0.5);
+    border-radius: 8px;
+    padding: 8px 18px;
+    text-transform: uppercase;
+    transition: background 0.2s;
+}
+
+.tech-tags span:hover {
+    background: rgba(255, 204, 0, 0.25);
+}
+
+/* Botão Voltar */
+.btn-voltar-neon {
+    position: fixed;
+    top: 25px;
+    left: 25px;
+    z-index: 100;
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #ffffff;
+    font-style: italic;
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, #091a30 0%, #030a14 100%);
+    border: 3px solid #00e5ff;
+    box-shadow: 0 0 18px rgba(0, 229, 255, 0.4);
+    transform: skewX(-6deg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-voltar-neon:hover {
+    transform: skewX(-6deg) translateX(5px);
+    box-shadow: 0 0 25px rgba(0, 229, 255, 0.7);
+}
