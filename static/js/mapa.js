@@ -22,12 +22,58 @@ function limparCanvas() {
 
 
 /**
+ * Desenha uma seta entre dois pontos.
+ */
+function desenharSeta(ctx, x1, y1, x2, y2, cor = '#fbbf24') {
+    const tamanhoCabeca = 10;
+    const angulo = Math.atan2(y2 - y1, x2 - x1);
+
+    // Linha
+    ctx.beginPath();
+    ctx.strokeStyle = cor;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    // Cabeça da seta
+    ctx.beginPath();
+    ctx.fillStyle = cor;
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(
+        x2 - tamanhoCabeca * Math.cos(angulo - Math.PI / 6),
+        y2 - tamanhoCabeca * Math.sin(angulo - Math.PI / 6)
+    );
+    ctx.lineTo(
+        x2 - tamanhoCabeca * Math.cos(angulo + Math.PI / 6),
+        y2 - tamanhoCabeca * Math.sin(angulo + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+}
+
+
+/**
+ * Converte coordenadas (0-100) do mapa pra pixels do canvas.
+ */
+function paraPixel(cidade, canvas) {
+    return {
+        px: cidade.x * (canvas.width / 100),
+        py: cidade.y * (canvas.height / 100),
+    };
+}
+
+
+/**
  * Desenha as cidades no canvas.
  * @param {Array} cidades — lista de cidades
- * @param {Array} destacadasIds — IDs das cidades que devem ficar destacadas (opcional)
- * @param {Array} ordenadasIds — IDs das cidades já ordenadas (pra desenhar linha final)
+ * @param {Array} destacadasIds — IDs sendo comparados (amarelo)
+ * @param {Array} concluidasIds — IDs já ordenados (verde)
+ * @param {Array} setasComparacao — lista de [a_id, b_id] pra desenhar setas amarelas
+ * @param {Array} ordemFinal — IDs na ordem final (pra desenhar setas verdes)
  */
-function desenharCidades(cidades, destacadasIds = [], ordenadasIds = []) {
+function desenharCidades(cidades, destacadasIds = [], concluidasIds = [], setasComparacao = [], ordemFinal = []) {
     const canvas = document.getElementById('mapa');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -37,19 +83,43 @@ function desenharCidades(cidades, destacadasIds = [], ordenadasIds = []) {
     const escalaX = canvas.width / 100;
     const escalaY = canvas.height / 100;
 
+    // --- 1. Setas de comparação (amarelo) ---
+    for (const [a_id, b_id] of setasComparacao) {
+        const a = cidades.find(c => c.id === a_id);
+        const b = cidades.find(c => c.id === b_id);
+        if (a && b) {
+            desenharSeta(ctx, a.x * escalaX, a.y * escalaY, b.x * escalaX, b.y * escalaY, '#fbbf24');
+        }
+    }
+
+    // --- 2. Setas da ordem final (verde) ---
+    if (ordemFinal.length > 1) {
+        for (let i = 0; i < ordemFinal.length - 1; i++) {
+            const a = cidades.find(c => c.id === ordemFinal[i]);
+            const b = cidades.find(c => c.id === ordemFinal[i + 1]);
+            if (a && b) {
+                desenharSeta(ctx, a.x * escalaX, a.y * escalaY, b.x * escalaX, b.y * escalaY, '#34d399');
+            }
+        }
+    }
+
+    // --- 3. Cidades (círculos + nomes) ---
     for (const cidade of cidades) {
         const px = cidade.x * escalaX;
         const py = cidade.y * escalaY;
-
-        // Tamanho do círculo proporcional à população
         const raio = 4 + (cidade.populacao / 100000) * 12;
 
-        // Cor: destaque (amarelo) se estiver sendo comparada
-        const destacada = destacadasIds.includes(cidade.id);
-        const corCirculo = destacada ? '#fbbf24' : '#a78bfa';
-        const corBorda = destacada ? '#f59e0b' : '#6c63ff';
+        let corCirculo = '#a78bfa';
+        let corBorda = '#6c63ff';
 
-        // Círculo
+        if (concluidasIds.includes(cidade.id)) {
+            corCirculo = '#34d399';
+            corBorda = '#10b981';
+        } else if (destacadasIds.includes(cidade.id)) {
+            corCirculo = '#fbbf24';
+            corBorda = '#f59e0b';
+        }
+
         ctx.beginPath();
         ctx.arc(px, py, raio, 0, Math.PI * 2);
         ctx.fillStyle = corCirculo;
@@ -58,35 +128,10 @@ function desenharCidades(cidades, destacadasIds = [], ordenadasIds = []) {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Nome acima
         ctx.fillStyle = '#e8e8e8';
         ctx.font = '12px Segoe UI';
         ctx.textAlign = 'center';
         ctx.fillText(cidade.nome, px, py - raio - 6);
-    }
-
-    // Se tem IDs ordenados, desenha a linha final conectando
-    if (ordenadasIds.length > 1) {
-        ctx.beginPath();
-        ctx.strokeStyle = '#34d399';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 4]);
-
-        let primeiro = true;
-        for (const id of ordenadasIds) {
-            const cidade = cidades.find(c => c.id === id);
-            if (!cidade) continue;
-            const px = cidade.x * escalaX;
-            const py = cidade.y * escalaY;
-            if (primeiro) {
-                ctx.moveTo(px, py);
-                primeiro = false;
-            } else {
-                ctx.lineTo(px, py);
-            }
-        }
-        ctx.stroke();
-        ctx.setLineDash([]);
     }
 }
 
@@ -98,10 +143,15 @@ function aplicarPasso(passo) {
     if (!passo) return;
 
     if (passo.tipo === 'comparar') {
-        // Destaca as duas cidades sendo comparadas
-        desenharCidades(cidadesGlobais, [passo.a_id, passo.b_id]);
+        // Destaca as duas cidades e desenha seta amarela entre elas
+        desenharCidades(
+            cidadesGlobais,
+            [passo.a_id, passo.b_id],
+            [],
+            [[passo.a_id, passo.b_id]]
+        );
     } else if (passo.tipo === 'merge') {
-        // Destaca o resultado do merge
+        // Destaca o resultado do merge (sem setas)
         desenharCidades(cidadesGlobais, passo.resultado_ids);
     }
 }
@@ -109,16 +159,15 @@ function aplicarPasso(passo) {
 
 /**
  * Executa o próximo passo da animação.
- * Retorna true se ainda tem passos, false se acabou.
  */
 function proximoPasso() {
     if (passoAtual >= passosGlobais.length) {
-        // Fim: desenha o estado final (linha conectando)
-        const idsOrdenados = cidadesGlobais
+        // Fim: cidades em verde + setas verdes conectando em ordem de população
+        const ordemFinal = cidadesGlobais
             .slice()
             .sort((a, b) => a.populacao - b.populacao)
             .map(c => c.id);
-        desenharCidades(cidadesGlobais, [], idsOrdenados);
+        desenharCidades(cidadesGlobais, [], cidadesGlobais.map(c => c.id), [], ordemFinal);
         return false;
     }
 
@@ -138,7 +187,7 @@ function play() {
 
     const slider = document.getElementById('slider-velocidade');
     const velocidade = slider ? parseInt(slider.value) : 5;
-    const intervalo = 1100 - (velocidade * 100); // 1000ms (lento) a 100ms (rápido)
+    const intervalo = 1100 - (velocidade * 100);
 
     timerAnimacao = setInterval(() => {
         const continua = proximoPasso();
