@@ -556,3 +556,38 @@ body.body-sobre {
     transform: skewX(-6deg) translateX(5px);
     box-shadow: 0 0 25px rgba(0, 229, 255, 0.7);
 }
+
+/* ==========================================================================
+   5. RESPONSIVIDADE (telas menores)
+   ========================================================================== */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+    .subtitulo {
+        font-size: 1rem;
+    }
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+    .mapa-container {
+        max-width: 100%;
+    }
+    .controles {
+        padding: 10px 14px;
+        gap: 8px;
+    }
+    button {
+        font-size: 0.75rem;
+        padding: 10px 14px;
+    }
+    .left-panel {
+        width: 60%;
+        padding: 1.5rem;
+    }
+    .dev-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
