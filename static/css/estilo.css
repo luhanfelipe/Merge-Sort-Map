@@ -111,3 +111,156 @@ canvas {
 .botao-acao:disabled:hover {
     background: #6c63ff;
 }
+
+/* ==========================================================================
+   TELA INICIAL (HOME)
+   ========================================================================== */
+body.body-inicio {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    /* Gradiente escurecendo a esquerda (azul marinho) */
+    background:
+        linear-gradient(90deg, rgba(9, 20, 38, 0.95) 0%, rgba(9, 20, 38, 0.6) 40%, rgba(9, 20, 38, 0) 100%),
+        url('../images/bg-home.jpg') center center / cover no-repeat;
+    background-color: #050508;
+}
+
+.screen-layout {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+/* Painel esquerdo: vidro fosco azulado */
+.left-panel {
+    position: relative;
+    width: 45%;
+    height: 100%;
+    background: rgba(15, 30, 55, 0.55);
+    backdrop-filter: blur(16px) saturate(120%);
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    z-index: 10;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+    border-right: 2px solid rgba(0, 255, 204, 0.2);
+    box-shadow: 15px 0 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Logo */
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    transform: skewX(-8deg); /* Menos inclinado que o carro */
+}
+
+.detonation {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #00ffff;
+}
+
+.dash {
+    font-size: 3.2rem;
+    font-weight: 900;
+    color: #00e5ff; /* Azul ciano (mapa) */
+    line-height: 0.9;
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #0077ff;
+}
+
+.flag {
+    font-size: 1.8rem;
+    font-style: normal;
+}
+
+/* Menu */
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    width: 90%;
+    margin-bottom: 3rem;
+}
+
+.card-btn {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px;
+    border-radius: 16px;
+    text-decoration: none;
+    transform: skewX(-6deg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-btn:hover {
+    transform: skewX(-6deg) translateX(10px) translateY(-5px);
+}
+
+/* Botão INICIAR (Verde) */
+.btn-iniciar {
+    background: linear-gradient(180deg, #063d18 0%, #021708 100%);
+    border: 3px solid #00ff66;
+    box-shadow: 0 0 18px rgba(0, 255, 102, 0.3);
+}
+
+.btn-iniciar:hover {
+    box-shadow: 0 0 25px rgba(0, 255, 102, 0.6);
+}
+
+/* Botão SOBRE (Amarelo) */
+.btn-sobre {
+    background: linear-gradient(180deg, #3d3206 0%, #171202 100%);
+    border: 3px solid #ffcc00;
+    box-shadow: 0 0 18px rgba(255, 204, 0, 0.3);
+}
+
+.btn-sobre:hover {
+    box-shadow: 0 0 25px rgba(255, 204, 0, 0.6);
+}
+
+.card-body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Caixinha do ícone */
+.icon-box {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: skewX(6deg);
+}
+
+.svg-icon {
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+}
+
+/* Cor do ícone conforme o botão */
+.btn-iniciar .svg-icon { color: #00ff66; }
+.btn-sobre .svg-icon { color: #ffcc00; }
+
+.btn-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffffff;
+    font-style: italic;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 0 #000;
+    transform: skewX(6deg);
+}

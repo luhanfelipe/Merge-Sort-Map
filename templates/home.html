@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Sort Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@1,800;1,900&family=Teko:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+
+<body class="body-inicio">
+    <div class="screen-layout">
+        <aside class="left-panel">
+            <header class="logo-box">
+                <div class="logo-text">
+                    <span class="detonation">MERGE</span>
+                    <span class="dash">SORT MAP <span class="flag">🗺️</span></span>
+                </div>
+            </header>
+
+            <nav class="menu-container">
+                <!-- Botão INICIAR -->
+                <a href="/visualizador" class="card-btn btn-iniciar">
+                    <div class="card-body">
+                        <!-- Ícone de Bússola -->
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                            </svg>
+                        </div>
+                        <span class="btn-text">INICIAR</span>
+                    </div>
+                </a>
+
+                <!-- Botão SOBRE -->
+                <a href="/sobre" class="card-btn btn-sobre">
+                    <div class="card-body">
+                        <!-- Ícone de Mapa -->
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+                                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                                <line x1="9" y1="3" x2="9" y2="18"></line>
+                                <line x1="15" y1="6" x2="15" y2="21"></line>
+                            </svg>
+                        </div>
+                        <span class="btn-text">SOBRE</span>
+                    </div>
+                </a>
+            </nav>
+        </aside>
+
+    </div>
+</body>
+</html>
