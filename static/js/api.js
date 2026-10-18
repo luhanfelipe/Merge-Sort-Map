@@ -1,39 +1,29 @@
 // =====================================================
 // api.js — Comunicação com o backend Flask
 // =====================================================
-// Este arquivo vai conter as funções de fetch que
-// conversam com as rotas /api/gerar e /api/reiniciar.
-//
-// Implementação completa: Issue #4 (Renderizar cidades no mapa).
-//
-// Funções previstas:
-//   - buscarCidades() → POST /api/gerar
-//                       retorna { cidades: [...], passos: [...] }
-// =====================================================
 
-async function buscarCidades() {
+/**
+ * Busca uma lista de cidades e os passos do Merge Sort no backend.
+ *
+ * @param {number} quantidade — quantas cidades gerar (padrão: 8)
+ * @returns {Promise<{cidades: Array, passos: Array}>}
+ */
+async function buscarCidades(quantidade = 8) {
     try {
         const response = await fetch('/api/gerar', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            // Envia os parâmetros esperados pelo backend
-            body: JSON.stringify({
-                qtd: 10,
-                quantidade: 10
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quantidade: quantidade }),
         });
 
         if (!response.ok) {
-            throw new Error(`Erro na requisição: ${response.status}`);
+            throw new Error(`Erro HTTP: ${response.status}`);
         }
 
-        const data = await response.json();
-        // Retorna a lista de cidades recebida
-        return data.cidades || data;
-    } catch (error) {
-        console.error('Erro ao buscar cidades:', error);
-        return [];
+        const dados = await response.json();
+        return dados;
+    } catch (erro) {
+        console.error('Falha ao buscar cidades:', erro);
+        return { cidades: [], passos: [] };
     }
 }

@@ -25,16 +25,14 @@
     <script src="{{ url_for('static', filename='js/api.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
     <script>
-        // Executa assim que a página carregar
-        document.addEventListener('DOMContentLoaded', async () => {
-            const cidades = await buscarCidades();
-            desenharCidades(cidades);
-        });
-
-        // Evento para o botão Reiniciar/Gerar novas cidades ao clicar
+        // Botão "Reiniciar": busca novas cidades
         document.getElementById('btn-reiniciar')?.addEventListener('click', async () => {
-            const cidades = await buscarCidades();
-            desenharCidades(cidades);
+            const dados = await buscarCidades();
+            if (dados && dados.cidades) {
+                cidadesGlobais = dados.cidades;
+                passosGlobais = dados.passos;
+                desenharCidades(cidadesGlobais);
+            }
         });
     </script>
 </body>
