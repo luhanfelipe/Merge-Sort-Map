@@ -9,16 +9,19 @@
 
 <body>
     <header>
-        <h1>Merge Sort Map</h1>
-        <p class="subtitulo">Visualizador interativo do algoritmo Merge Sort</p>
+        <a href="/" class="btn-voltar-mapa">⬅ Voltar</a>
+        <div class="header-content">
+            <h1>Merge Sort Map</h1>
+            <p class="subtitulo">Visualizador interativo do algoritmo Merge Sort</p>
+        </div>
     </header>
 
     <main>
         <div class="controles">
-            <button id="btn-play" class="botao-acao">▶ Play</button>
-            <button id="btn-pause" class="botao-acao">⏸ Pause</button>
-            <button id="btn-passo" class="botao-acao">⏭ Passo a passo</button>
-            <button id="btn-reiniciar" class="botao-acao">🔄 Reiniciar</button>
+            <button id="btn-play" class="botao-acao btn-play">▶ Play</button>
+            <button id="btn-pause" class="botao-acao btn-pause">⏸ Pause</button>
+            <button id="btn-passo" class="botao-acao btn-passo">⏭ Passo a passo</button>
+            <button id="btn-reiniciar" class="botao-acao btn-reiniciar">🔄 Reiniciar</button>
 
             <div class="velocidade-container">
                 <label for="slider-velocidade">Velocidade:</label>
@@ -30,7 +33,7 @@
             <canvas id="mapa" width="900" height="600"></canvas>
         </div>
     </main>
-
+    
     <script src="{{ url_for('static', filename='js/api.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
     <script>
@@ -39,6 +42,6 @@
         document.getElementById('btn-passo')?.addEventListener('click', passoAPasso);
         document.getElementById('btn-reiniciar')?.addEventListener('click', reiniciar);
     </script>
-    
+
 </body>
 </html>

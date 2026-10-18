@@ -1,15 +1,24 @@
-/* === Reset básico === */
+/* ==========================================================================
+   1. RESET E ESTILOS GERAIS
+   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* === Corpo da página === */
+/* ==========================================================================
+   2. TELA DO VISUALIZADOR (MAP + CONTROLES)
+   ========================================================================== */
 body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: #0f0f1e;
-    color: #e8e8e8;
+    font-family: 'Orbitron', sans-serif;
+    /* Fundo escuro com textura de mapa (igual ao Sobre) */
+    background:
+        linear-gradient(rgba(9, 20, 38, 0.92), rgba(9, 20, 38, 0.95)),
+        url('../images/bg-home.jpg') center center / cover no-repeat;
+    background-color: #091426;
+    background-attachment: fixed;
+    color: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -17,24 +26,57 @@ body {
     padding: 20px;
 }
 
-/* === Cabeçalho === */
 header {
-    text-align: center;
+    width: 100%;
+    max-width: 960px;
     margin-bottom: 20px;
+    position: relative;
+}
+
+.header-content {
+    text-align: center;
 }
 
 h1 {
-    font-size: 32px;
-    color: #a78bfa;
-    margin-bottom: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #00e5ff;
+    letter-spacing: 2px;
 }
 
 .subtitulo {
-    font-size: 14px;
-    color: #888;
+    font-family: 'Teko', sans-serif;
+    font-size: 1.2rem;
+    color: #bbdefb;
+    letter-spacing: 1px;
+    margin-top: 4px;
 }
 
-/* === Área principal === */
+.btn-voltar-mapa {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #ffffff;
+    background: linear-gradient(180deg, #091a30 0%, #030a14 100%);
+    border: 2px solid #00e5ff;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+    transform: skewX(-6deg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-voltar-mapa:hover {
+    transform: skewX(-6deg) translateX(5px);
+    box-shadow: 0 0 25px rgba(0, 229, 255, 0.8);
+}
+
 main {
     display: flex;
     flex-direction: column;
@@ -44,62 +86,85 @@ main {
     max-width: 960px;
 }
 
-/* === Controles (botões) === */
 .controles {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
+    background: rgba(15, 30, 55, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 14px 20px;
+    border-radius: 16px;
+    border: 2px solid rgba(0, 229, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
 }
 
 button {
-    background: #6c63ff;
-    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #ffffff;
     border: none;
-    padding: 10px 22px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    transform: skewX(-6deg);
+    transition: transform 0.15s, box-shadow 0.2s;
 }
 
 button:hover {
-    background: #5a52d5;
+    transform: skewX(-6deg) translateY(-3px);
 }
 
 button:active {
-    transform: scale(0.97);
+    transform: skewX(-6deg) scale(0.97);
 }
 
-/* === Container do mapa === */
-.mapa-container {
-    background: #1a1a2e;
-    border-radius: 12px;
-    padding: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+/* Cores dos botões */
+.btn-play {
+    background: linear-gradient(180deg, #063d18 0%, #021708 100%);
+    border: 2px solid #00ff66;
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
 }
+.btn-play:hover { box-shadow: 0 0 25px rgba(0, 255, 102, 0.7); }
 
-/* === Estilização do Canvas do Mapa === */
-canvas {
-    display: block;
-    border-radius: 8px;
-    background: #15152a;
-    border: 1px solid #2a2a4a;
+.btn-pause {
+    background: linear-gradient(180deg, #3d3206 0%, #171202 100%);
+    border: 2px solid #ffcc00;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
 }
+.btn-pause:hover { box-shadow: 0 0 25px rgba(255, 204, 0, 0.7); }
 
-/* === Controles adicionais === */
+.btn-passo {
+    background: linear-gradient(180deg, #091a30 0%, #030a14 100%);
+    border: 2px solid #0088ff;
+    box-shadow: 0 0 15px rgba(0, 136, 255, 0.3);
+}
+.btn-passo:hover { box-shadow: 0 0 25px rgba(0, 136, 255, 0.7); }
+
+.btn-reiniciar {
+    background: linear-gradient(180deg, #3d070a 0%, #170204 100%);
+    border: 2px solid #ff2a2a;
+    box-shadow: 0 0 15px rgba(255, 42, 42, 0.3);
+}
+.btn-reiniciar:hover { box-shadow: 0 0 25px rgba(255, 42, 42, 0.7); }
+
 .velocidade-container {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #a0a0a0;
-    font-size: 14px;
+    color: #bbdefb;
+    font-family: 'Teko', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
 }
 
 .velocidade-container input[type="range"] {
     width: 120px;
-    accent-color: #6c63ff;
+    accent-color: #00e5ff;
     cursor: pointer;
 }
 
@@ -108,12 +173,22 @@ canvas {
     cursor: not-allowed;
 }
 
-.botao-acao:disabled:hover {
-    background: #6c63ff;
+.mapa-container {
+    background: rgba(9, 20, 38, 0.9);
+    border-radius: 16px;
+    padding: 8px;
+    border: 2px solid rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+}
+
+canvas {
+    display: block;
+    border-radius: 10px;
+    background: #0a1a2e;
 }
 
 /* ==========================================================================
-   TELA INICIAL (HOME)
+   3. TELA INICIAL (HOME)
    ========================================================================== */
 body.body-inicio {
     display: block;
@@ -123,7 +198,6 @@ body.body-inicio {
     height: 100vh;
     overflow: hidden;
     font-family: 'Orbitron', sans-serif;
-    /* Gradiente escurecendo a esquerda (azul marinho) */
     background:
         linear-gradient(90deg, rgba(9, 20, 38, 0.95) 0%, rgba(9, 20, 38, 0.6) 40%, rgba(9, 20, 38, 0) 100%),
         url('../images/bg-home.jpg') center center / cover no-repeat;
@@ -137,7 +211,6 @@ body.body-inicio {
     position: relative;
 }
 
-/* Painel esquerdo: vidro fosco azulado */
 .left-panel {
     position: relative;
     width: 45%;
@@ -155,11 +228,10 @@ body.body-inicio {
     box-shadow: 15px 0 40px rgba(0, 0, 0, 0.6);
 }
 
-/* Logo */
 .logo-text {
     display: flex;
     flex-direction: column;
-    transform: skewX(-8deg); /* Menos inclinado que o carro */
+    transform: skewX(-8deg);
 }
 
 .detonation {
@@ -173,7 +245,7 @@ body.body-inicio {
 .dash {
     font-size: 3.2rem;
     font-weight: 900;
-    color: #00e5ff; /* Azul ciano (mapa) */
+    color: #00e5ff;
     line-height: 0.9;
     text-shadow: 2px 2px 0 #000, -1px -1px 0 #0077ff;
 }
@@ -183,7 +255,6 @@ body.body-inicio {
     font-style: normal;
 }
 
-/* Menu */
 .menu-container {
     display: flex;
     flex-direction: column;
@@ -206,7 +277,6 @@ body.body-inicio {
     transform: skewX(-6deg) translateX(10px) translateY(-5px);
 }
 
-/* Botão INICIAR (Verde) */
 .btn-iniciar {
     background: linear-gradient(180deg, #063d18 0%, #021708 100%);
     border: 3px solid #00ff66;
@@ -217,7 +287,6 @@ body.body-inicio {
     box-shadow: 0 0 25px rgba(0, 255, 102, 0.6);
 }
 
-/* Botão SOBRE (Amarelo) */
 .btn-sobre {
     background: linear-gradient(180deg, #3d3206 0%, #171202 100%);
     border: 3px solid #ffcc00;
@@ -234,7 +303,6 @@ body.body-inicio {
     gap: 20px;
 }
 
-/* Caixinha do ícone */
 .icon-box {
     width: 50px;
     height: 50px;
@@ -250,7 +318,6 @@ body.body-inicio {
     color: #ffffff;
 }
 
-/* Cor do ícone conforme o botão */
 .btn-iniciar .svg-icon { color: #00ff66; }
 .btn-sobre .svg-icon { color: #ffcc00; }
 
@@ -266,7 +333,7 @@ body.body-inicio {
 }
 
 /* ==========================================================================
-   TELA SOBRE
+   4. TELA SOBRE
    ========================================================================== */
 body.body-sobre {
     display: block;
@@ -276,7 +343,6 @@ body.body-sobre {
     overflow-x: hidden;
     font-family: 'Orbitron', sans-serif;
     color: #ffffff;
-    /* Fundo azul escuro com gradiente e textura sutil */
     background:
         linear-gradient(rgba(9, 20, 38, 0.85), rgba(9, 20, 38, 0.95)),
         url('../images/bg-home.jpg') center center / cover no-repeat;
@@ -292,7 +358,6 @@ body.body-sobre {
     padding: 80px 30px 80px;
 }
 
-/* Header */
 .sobre-header {
     text-align: center;
     margin-bottom: 50px;
@@ -331,7 +396,6 @@ body.body-sobre {
     margin: 0;
 }
 
-/* Container dos Devs */
 .devs-container {
     display: flex;
     flex-direction: column;
@@ -368,7 +432,6 @@ body.body-sobre {
     box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
 }
 
-/* Foto Redonda */
 .dev-photo {
     width: 75px;
     height: 75px;
@@ -409,7 +472,6 @@ body.body-sobre {
     letter-spacing: 0.5px;
 }
 
-/* Sobre o Projeto */
 .project-container {
     background: rgba(15, 30, 55, 0.85);
     border: 2px solid rgba(0, 255, 204, 0.4);
@@ -443,7 +505,6 @@ body.body-sobre {
     font-weight: 700;
 }
 
-/* Tags de Tecnologia */
 .tech-tags {
     display: flex;
     flex-wrap: wrap;
@@ -470,7 +531,6 @@ body.body-sobre {
     background: rgba(255, 204, 0, 0.25);
 }
 
-/* Botão Voltar */
 .btn-voltar-neon {
     position: fixed;
     top: 25px;
