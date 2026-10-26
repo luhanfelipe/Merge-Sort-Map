@@ -9,6 +9,19 @@ let passoAtual = 0;
 let animando = false;
 let timerAnimacao = null;
 
+// Estado da animação (posições atuais e alvos)
+let posicoesAtuais = {}; // { id_cidade: { x, y } }
+let posicoesAlvo = {};   // { id_cidade: { x, y } }
+let raioAtual = {};      // { id_cidade: número }
+let raioAlvo = {};       // { id_cidade: número }
+let corCirculoAtual = {}; // { id_cidade: string }
+let corCirculoAlvo = {};  // { id_cidade: string }
+let corBordaAtual = {};
+let corBordaAlvo = {};
+
+let setasAtivas = []; // [{ a_id, b_id, progresso }]
+let ordemFinalAtiva = [];
+
 
 /**
  * Limpa todo o conteúdo do canvas.
@@ -20,20 +33,18 @@ function limparCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+
 /**
- * Desenha um fundo estilo mapa (ruas, quadras) no canvas.
- * Chamado antes de desenhar as cidades, pra dar sensação de mapa.
+ * Desenha o fundo estilo mapa (ruas e quadras).
  */
 function desenharFundoMapa() {
     const canvas = document.getElementById('mapa');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    // Fundo base escuro
     ctx.fillStyle = '#0a1a2e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Quadras (preenchimento sutil de "quarteirões")
     ctx.fillStyle = '#0f2440';
     for (let y = 0; y < canvas.height; y += 60) {
         for (let x = 0; x < canvas.width; x += 80) {
@@ -43,19 +54,15 @@ function desenharFundoMapa() {
         }
     }
 
-    // Ruas (linhas)
     ctx.strokeStyle = '#1a3a5c';
     ctx.lineWidth = 1;
 
-    // Ruas horizontais
     for (let y = 0; y < canvas.height; y += 60) {
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);
         ctx.stroke();
     }
-
-    // Ruas verticais
     for (let x = 0; x < canvas.width; x += 80) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -64,33 +71,37 @@ function desenharFundoMapa() {
     }
 }
 
+
 /**
  * Desenha uma seta entre dois pontos.
  */
-function desenharSeta(ctx, x1, y1, x2, y2, cor = '#fbbf24') {
-    const tamanhoCabeca = 10;
-    const angulo = Math.atan2(y2 - y1, x2 - x1);
+function desenharSeta(ctx, x1, y1, x2, y2, cor, progresso = 1) {
+    // Interpola o ponto final da seta (para animar o crescimento)
+    const xf = x1 + (x2 - x1) * progresso;
+    const yf = y1 + (y2 - y1) * progresso;
 
-    // Linha
+    const tamanhoCabeca = 10;
+    const angulo = Math.atan2(yf - y1, xf - x1);
+
     ctx.beginPath();
     ctx.strokeStyle = cor;
     ctx.lineWidth = 2;
     ctx.setLineDash([]);
     ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
+    ctx.lineTo(xf, yf);
     ctx.stroke();
 
     // Cabeça da seta
     ctx.beginPath();
     ctx.fillStyle = cor;
-    ctx.moveTo(x2, y2);
+    ctx.moveTo(xf, yf);
     ctx.lineTo(
-        x2 - tamanhoCabeca * Math.cos(angulo - Math.PI / 6),
-        y2 - tamanhoCabeca * Math.sin(angulo - Math.PI / 6)
+        xf - tamanhoCabeca * Math.cos(angulo - Math.PI / 6),
+        yf - tamanhoCabeca * Math.sin(angulo - Math.PI / 6)
     );
     ctx.lineTo(
-        x2 - tamanhoCabeca * Math.cos(angulo + Math.PI / 6),
-        y2 - tamanhoCabeca * Math.sin(angulo + Math.PI / 6)
+        xf - tamanhoCabeca * Math.cos(angulo + Math.PI / 6),
+        yf - tamanhoCabeca * Math.sin(angulo + Math.PI / 6)
     );
     ctx.closePath();
     ctx.fill();
@@ -98,25 +109,9 @@ function desenharSeta(ctx, x1, y1, x2, y2, cor = '#fbbf24') {
 
 
 /**
- * Converte coordenadas (0-100) do mapa pra pixels do canvas.
+ * Loop de animação contínuo (60fps) — interpola valores.
  */
-function paraPixel(cidade, canvas) {
-    return {
-        px: cidade.x * (canvas.width / 100),
-        py: cidade.y * (canvas.height / 100),
-    };
-}
-
-
-/**
- * Desenha as cidades no canvas.
- * @param {Array} cidades — lista de cidades
- * @param {Array} destacadasIds — IDs sendo comparados (amarelo)
- * @param {Array} concluidasIds — IDs já ordenados (verde)
- * @param {Array} setasComparacao — lista de [a_id, b_id] pra desenhar setas amarelas
- * @param {Array} ordemFinal — IDs na ordem final (pra desenhar setas verdes)
- */
-function desenharCidades(cidades, destacadasIds = [], concluidasIds = [], setasComparacao = [], ordemFinal = []) {
+function loopAnimacao() {
     const canvas = document.getElementById('mapa');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -127,91 +122,133 @@ function desenharCidades(cidades, destacadasIds = [], concluidasIds = [], setasC
     const escalaX = canvas.width / 100;
     const escalaY = canvas.height / 100;
 
-    // --- 1. Setas de comparação (amarelo) ---
-    for (const [a_id, b_id] of setasComparacao) {
-        const a = cidades.find(c => c.id === a_id);
-        const b = cidades.find(c => c.id === b_id);
-        if (a && b) {
-            desenharSeta(ctx, a.x * escalaX, a.y * escalaY, b.x * escalaX, b.y * escalaY, '#fbbf24');
+    // 1. Atualiza as posições/cores atuais em direção aos alvos (lerp)
+    for (const cidade of cidadesGlobais) {
+        const id = cidade.id;
+
+        if (!posicoesAtuais[id]) {
+            posicoesAtuais[id] = { x: cidade.x * escalaX, y: cidade.y * escalaY };
+            posicoesAlvo[id] = { x: cidade.x * escalaX, y: cidade.y * escalaY };
+            raioAtual[id] = 4 + (cidade.populacao / 100000) * 12;
+            raioAlvo[id] = raioAtual[id];
+            corCirculoAtual[id] = '#00e5ff';
+            corCirculoAlvo[id] = '#00e5ff';
+            corBordaAtual[id] = '#00b8d4';
+            corBordaAlvo[id] = '#00b8d4';
+        }
+
+        // Interpola posição
+        posicoesAtuais[id].x += (posicoesAlvo[id].x - posicoesAtuais[id].x) * 0.15;
+        posicoesAtuais[id].y += (posicoesAlvo[id].y - posicoesAtuais[id].y) * 0.15;
+
+        // Interpola raio
+        raioAtual[id] += (raioAlvo[id] - raioAtual[id]) * 0.15;
+
+        // Interpola cor
+        corCirculoAtual[id] = corCirculoAlvo[id]; // cor é instantânea (troca de estado)
+        corBordaAtual[id] = corBordaAlvo[id];
+    }
+
+    // 2. Desenha setas ativas (amarelas) crescendo
+    for (const seta of setasAtivas) {
+        if (seta.progresso < 1) {
+            seta.progresso = Math.min(1, seta.progresso + 0.08);
+        }
+        const a = cidadesGlobais.find(c => c.id === seta.a_id);
+        const b = cidadesGlobais.find(c => c.id === seta.b_id);
+        if (a && b && posicoesAtuais[a.id] && posicoesAtuais[b.id]) {
+            const pa = posicoesAtuais[a.id];
+            const pb = posicoesAtuais[b.id];
+            desenharSeta(ctx, pa.x, pa.y, pb.x, pb.y, '#fbbf24', seta.progresso);
         }
     }
 
-    // --- 2. Setas da ordem final (verde) ---
-    if (ordemFinal.length > 1) {
-        for (let i = 0; i < ordemFinal.length - 1; i++) {
-            const a = cidades.find(c => c.id === ordemFinal[i]);
-            const b = cidades.find(c => c.id === ordemFinal[i + 1]);
-            if (a && b) {
-                desenharSeta(ctx, a.x * escalaX, a.y * escalaY, b.x * escalaX, b.y * escalaY, '#34d399');
-            }
+    // 3. Desenha setas verdes (ordem final)
+    for (let i = 0; i < ordemFinalAtiva.length - 1; i++) {
+        const a = cidadesGlobais.find(c => c.id === ordemFinalAtiva[i]);
+        const b = cidadesGlobais.find(c => c.id === ordemFinalAtiva[i + 1]);
+        if (a && b && posicoesAtuais[a.id] && posicoesAtuais[b.id]) {
+            const pa = posicoesAtuais[a.id];
+            const pb = posicoesAtuais[b.id];
+            desenharSeta(ctx, pa.x, pa.y, pb.x, pb.y, '#34d399', 1);
         }
     }
 
-    // --- 3. Cidades (círculos + nomes) ---
-    for (const cidade of cidades) {
-        const px = cidade.x * escalaX;
-        const py = cidade.y * escalaY;
-        const raio = 4 + (cidade.populacao / 100000) * 12;
+    // 4. Desenha as cidades
+    for (const cidade of cidadesGlobais) {
+        const id = cidade.id;
+        const pos = posicoesAtuais[id];
+        if (!pos) continue;
 
-        let corCirculo = '#00e5ff'; // ciano (destaca bem no fundo escuro)
-        let corBorda = '#00b8d4';
-
-        if (concluidasIds.includes(cidade.id)) {
-            corCirculo = '#34d399';
-            corBorda = '#10b981';
-        } else if (destacadasIds.includes(cidade.id)) {
-            corCirculo = '#fbbf24';
-            corBorda = '#f59e0b';
-        }
-        
         ctx.beginPath();
-        ctx.arc(px, py, raio, 0, Math.PI * 2);
-        ctx.fillStyle = corCirculo;
+        ctx.arc(pos.x, pos.y, raioAtual[id], 0, Math.PI * 2);
+        ctx.fillStyle = corCirculoAtual[id];
         ctx.fill();
-        ctx.strokeStyle = corBorda;
+        ctx.strokeStyle = corBordaAtual[id];
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.fillStyle = '#e8e8e8';
-        ctx.font = '12px Segoe UI';
+        // Nome
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '12px Orbitron, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(cidade.nome, px, py - raio - 6);
+        ctx.fillText(cidade.nome, pos.x, pos.y - raioAtual[id] - 8);
+    }
+
+    requestAnimationFrame(loopAnimacao);
+}
+
+
+/**
+ * Configura as cores-alvo de cada cidade conforme o estado (padrão, destacada, concluída).
+ */
+function atualizarCores(destacadasIds, concluidasIds) {
+    for (const cidade of cidadesGlobais) {
+        const id = cidade.id;
+        if (concluidasIds.includes(id)) {
+            corCirculoAlvo[id] = '#34d399';
+            corBordaAlvo[id] = '#10b981';
+        } else if (destacadasIds.includes(id)) {
+            corCirculoAlvo[id] = '#fbbf24';
+            corBordaAlvo[id] = '#f59e0b';
+        } else {
+            corCirculoAlvo[id] = '#00e5ff';
+            corBordaAlvo[id] = '#00b8d4';
+        }
     }
 }
 
 
 /**
- * Aplica um passo do Merge Sort no canvas.
+ * Aplica um passo da animação.
  */
 function aplicarPasso(passo) {
     if (!passo) return;
 
     if (passo.tipo === 'comparar') {
-        // Destaca as duas cidades e desenha seta amarela entre elas
-        desenharCidades(
-            cidadesGlobais,
-            [passo.a_id, passo.b_id],
-            [],
-            [[passo.a_id, passo.b_id]]
-        );
+        atualizarCores([passo.a_id, passo.b_id], []);
+        setasAtivas = [{ a_id: passo.a_id, b_id: passo.b_id, progresso: 0 }];
+        ordemFinalAtiva = [];
     } else if (passo.tipo === 'merge') {
-        // Destaca o resultado do merge (sem setas)
-        desenharCidades(cidadesGlobais, passo.resultado_ids);
+        atualizarCores(passo.resultado_ids, []);
+        setasAtivas = [];
     }
 }
 
 
 /**
- * Executa o próximo passo da animação.
+ * Avança um passo.
  */
 function proximoPasso() {
     if (passoAtual >= passosGlobais.length) {
-        // Fim: cidades em verde + setas verdes conectando em ordem de população
-        const ordemFinal = cidadesGlobais
+        // Fim: todas as cidades concluídas + setas verdes
+        const idsOrdenados = cidadesGlobais
             .slice()
             .sort((a, b) => a.populacao - b.populacao)
             .map(c => c.id);
-        desenharCidades(cidadesGlobais, [], cidadesGlobais.map(c => c.id), [], ordemFinal);
+        atualizarCores([], cidadesGlobais.map(c => c.id));
+        setasAtivas = [];
+        ordemFinalAtiva = idsOrdenados;
         return false;
     }
 
@@ -223,7 +260,7 @@ function proximoPasso() {
 
 
 /**
- * Inicia a animação contínua (botão Play).
+ * Inicia a animação contínua.
  */
 function play() {
     if (animando) return;
@@ -231,7 +268,8 @@ function play() {
 
     const slider = document.getElementById('slider-velocidade');
     const velocidade = slider ? parseInt(slider.value) : 5;
-    const intervalo = 1100 - (velocidade * 100);
+    // 1200ms (lento) a 200ms (rápido)
+    const intervalo = 1400 - (velocidade * 120);
 
     timerAnimacao = setInterval(() => {
         const continua = proximoPasso();
@@ -255,7 +293,7 @@ function pause() {
 
 
 /**
- * Executa um único passo (botão Passo a passo).
+ * Executa um único passo.
  */
 function passoAPasso() {
     pause();
@@ -264,17 +302,29 @@ function passoAPasso() {
 
 
 /**
- * Reinicia tudo: busca cidades novas e reseta o estado.
+ * Reinicia o app.
  */
 async function reiniciar() {
     pause();
     passoAtual = 0;
 
+    // Limpa o estado de animação
+    posicoesAtuais = {};
+    posicoesAlvo = {};
+    raioAtual = {};
+    raioAlvo = {};
+    corCirculoAtual = {};
+    corCirculoAlvo = {};
+    corBordaAtual = {};
+    corBordaAlvo = {};
+    setasAtivas = [];
+    ordemFinalAtiva = [];
+
     const dados = await buscarCidades(8);
     if (dados && dados.cidades) {
         cidadesGlobais = dados.cidades;
         passosGlobais = dados.passos;
-        desenharCidades(cidadesGlobais);
+        atualizarCores([], []);
         console.log(`Reiniciado: ${cidadesGlobais.length} cidades, ${passosGlobais.length} passos.`);
     }
 }
@@ -292,9 +342,10 @@ async function iniciar() {
 
     console.log(`Recebidas ${cidadesGlobais.length} cidades e ${passosGlobais.length} passos.`);
 
-    desenharCidades(cidadesGlobais);
+    atualizarCores([], []);
+    loopAnimacao(); // inicia o loop de renderização
 }
 
 
-// Chama iniciar() quando a página carrega
+// Inicia quando a página carrega
 window.addEventListener('DOMContentLoaded', iniciar);
